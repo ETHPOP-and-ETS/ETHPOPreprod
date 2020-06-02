@@ -81,7 +81,8 @@ gridExtra::grid.arrange(p1, p2)
 
 diff_plot <-
   merge(dat_plot, sim_plot,
-        by = c("age", "ETH.group", "sex", "year"), suffixes = c(".eth", ".sim")) %>%
+        by = c("age", "ETH.group", "sex", "year"),
+        suffixes = c(".eth", ".sim")) %>%
   mutate(diff_pop = pop.eth - pop.sim,
          scaled_diff = diff_pop/pop.eth)
 
@@ -120,13 +121,13 @@ sim_plot <-
   summarise(pop = sum(pop)) %>%
   mutate(dat = "sim")
 
-sim_plot <- bind_rows(sim_plot,
+dat_plot <- bind_rows(sim_plot,
                       dat_plot)
 
 p <- list()
-for (var in unique(sim_plot$agegrp)) {
+for (var in unique(dat_plot$agegrp)) {
 
-  dat <- sim_plot[sim_plot$agegrp == var, ]
+  dat <- dat_plot[dat_plot$agegrp == var, ]
 
   p[[var]] <-
     # ggplot(dat, aes(x=year, y=prop)) +  # proportion UK born/Non-UK born
@@ -138,3 +139,27 @@ for (var in unique(sim_plot$agegrp)) {
   print(p[[var]] + ggtitle(var))
 }
 
+## scaled difference
+
+diff_dat <-
+  merge(dat_plot[, c("agegrp", "ETH.group", "year", "pop")],
+        sim_plot[, c("agegrp", "ETH.group", "year", "pop")],
+        by = c("agegrp", "ETH.group", "year"),
+        suffixes = c(".eth", ".sim")) %>%
+  mutate(diff_pop = pop.eth - pop.sim,
+         scaled_diff = diff_pop/pop.eth)
+
+p <- list()
+for (var in unique(diff_dat$agegrp)) {
+
+  dat <- diff_dat[diff_dat$agegrp == var, ]
+
+  p[[var]] <-
+    # ggplot(dat, aes(x=year, y=prop)) +  # proportion UK born/Non-UK born
+    ggplot(dat, aes(x = year, y = scaled_diff)) +     # absolute counts
+    geom_line() +
+    facet_wrap(~ETH.group, scales = "free_y") #+
+  # ylim(0, 30000)
+
+  print(p[[var]] + ggtitle(var))
+}
