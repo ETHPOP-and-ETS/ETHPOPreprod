@@ -27,7 +27,6 @@ add_births <- function(pop,
   if (any(pop$age == 0)) stop("Shouldn't be any age 0 in population data")
   if (all(is.na(dat_births))) return(pop)
 
-
   ##TODO: include UK born in is_prop...
 
   # counts for eligible population

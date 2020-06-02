@@ -17,7 +17,7 @@ harmonise_ons_inflow <- function(dat_inflow){
                ETH.group == "OBL" ~ "Black-Other",
                ETH.group == "CHI" ~ "Chinese",
                ETH.group == "IND" ~ "Indian",
-               ETH.group == "PAK" ~ "Pakistan"),
+               ETH.group == "PAK" ~ "Pakistani"),
            age = ifelse(age %in% 85:100, 85, age)) %>%             # make 90 max single age
     group_by(sex, age, ETH.group, year) %>%
     summarise(inmigrants = sum(inmigrants)) %>%
@@ -38,7 +38,7 @@ harmonise_ons_outflow <- function(dat_outflow,
                ETH.group == "OBL" ~ "Black-Other",
                ETH.group == "CHI" ~ "Chinese",
                ETH.group == "IND" ~ "Indian",
-               ETH.group == "PAK" ~ "Pakistan"),
+               ETH.group == "PAK" ~ "Pakistani"),
            age = ifelse(age %in% 85:100, 85, age)) %>%
     group_by(sex, age, ETH.group, year) %>%
     summarise(outmigrants = sum(outmigrants)) %>%
@@ -66,7 +66,7 @@ harmonise_ons_births <- function(dat_births) {
                ETH.group == "OBL" ~ "Black-Other",
                ETH.group == "CHI" ~ "Chinese",
                ETH.group == "IND" ~ "Indian",
-               ETH.group == "PAK" ~ "Pakistan")) %>%
+               ETH.group == "PAK" ~ "Pakistani")) %>%
     group_by(sex, ETH.group, year) %>%
     summarise(births = sum(births)) %>%
     mutate(CoB = "UK born")
@@ -87,7 +87,7 @@ harmonise_ons_deaths <- function(dat_deaths,
                ETH.group == "OBL" ~ "Black-Other",
                ETH.group == "CHI" ~ "Chinese",
                ETH.group == "IND" ~ "Indian",
-               ETH.group == "PAK" ~ "Pakistan"),
+               ETH.group == "PAK" ~ "Pakistani"),
            age = ifelse(age %in% 85:100, 85, age)) %>%
     group_by(sex, age, ETH.group, year) %>%
     summarise(deaths = sum(deaths)) %>%
