@@ -121,13 +121,13 @@ sim_plot <-
   summarise(pop = sum(pop)) %>%
   mutate(dat = "sim")
 
-dat_plot <- bind_rows(sim_plot,
+all_plot <- bind_rows(sim_plot,
                       dat_plot)
 
 p <- list()
-for (var in unique(dat_plot$agegrp)) {
+for (var in unique(all_plot$agegrp)) {
 
-  dat <- dat_plot[dat_plot$agegrp == var, ]
+  dat <- all_plot[all_plot$agegrp == var, ]
 
   p[[var]] <-
     # ggplot(dat, aes(x=year, y=prop)) +  # proportion UK born/Non-UK born
