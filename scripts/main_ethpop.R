@@ -4,6 +4,7 @@
 #
 # N Green
 #
+# rmarkdown::render("scripts/main_ethpop.R")
 
 
 library(dplyr)
@@ -21,11 +22,14 @@ dat_pop <- read_csv("~/R/cleanETHPOP/output_data/clean_pop_Leeds2.csv",
                                      age = col_double(),
                                      year = col_double()))
 
-dat_inflow <- read_csv("~/R/cleanETHPOP/output_data/clean_inmigrants_Leeds2.csv", col_types = list(sex = col_character()))
-dat_outflow <- read_csv("~/R/cleanETHPOP/output_data/clean_outmigrants_Leeds2.csv", col_types = list(sex = col_character()))
-dat_births <- read_csv("~/R/cleanETHPOP/output_data/clean_births_Leeds2.csv", col_types = list(sex = col_character()))
-dat_deaths <- read_csv("~/R/cleanETHPOP/output_data/clean_deaths_Leeds2.csv", col_types = list(sex = col_character()))
-
+dat_inflow <- read_csv("~/R/cleanETHPOP/output_data/clean_inmigrants_Leeds2.csv",
+                       col_types = list(sex = col_character()))
+dat_outflow <- read_csv("~/R/cleanETHPOP/output_data/clean_outmigrants_Leeds2.csv",
+                        col_types = list(sex = col_character()))
+dat_births <- read_csv("~/R/cleanETHPOP/output_data/clean_births_Leeds2.csv",
+                       col_types = list(sex = col_character()))
+dat_deaths <- read_csv("~/R/cleanETHPOP/output_data/clean_deaths_Leeds2.csv",
+                       col_types = list(sex = col_character())) %>% select(-agegrp)
 
 res <-
   run_model(dat_pop,
@@ -37,10 +41,11 @@ res <-
 sim_pop <- bind_rows(res)
 
 
-
 ########
 # plot #
 ########
+
+# check can replicate original ETHPOP population projection
 
 sim_plot <-
   sim_pop %>%
@@ -50,6 +55,7 @@ sim_plot <-
   mutate(year = as.factor(year))
   # mutate(eth_sex_year = interaction(ETH.group, sex, year))
 
+# original ETHPOP
 dat_plot <-
   dat_pop %>%
   filter(sex == "M",
@@ -94,3 +100,41 @@ p4 <-
 
 p4
 p4 + ylim(-2, 3)
+
+
+# % or pop over time for ethnic and age group ----
+
+## ETHPOP
+dat_plot <-
+  dat_pop %>%
+  mutate(agegrp = cut(age, seq(0, 105, by = 5), right = FALSE)) %>%
+  group_by(ETH.group, agegrp, year) %>%
+  summarise(pop = sum(pop)) %>%
+  mutate(dat = "eth")
+
+## predictions
+sim_plot <-
+  sim_pop %>%
+  mutate(agegrp = cut(age, seq(0, 105, by = 5), right = FALSE)) %>%
+  group_by(ETH.group, agegrp, year) %>%
+  summarise(pop = sum(pop)) %>%
+  mutate(dat = "sim")
+
+sim_plot <- bind_rows(sim_plot,
+                      dat_plot)
+
+p <- list()
+for (var in unique(sim_plot$agegrp)) {
+
+  dat <- sim_plot[sim_plot$agegrp == var, ]
+
+  p[[var]] <-
+    # ggplot(dat, aes(x=year, y=prop)) +  # proportion UK born/Non-UK born
+    ggplot(dat, aes(x=year, y=pop, colour = dat)) +     # absolute counts
+    geom_line() +
+    facet_wrap(~ETH.group, scales = "free_y") #+
+  # ylim(0, 30000)
+
+  print(p[[var]] + ggtitle(var))
+}
+

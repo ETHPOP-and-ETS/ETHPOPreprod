@@ -142,7 +142,7 @@ sim_plot <-
 q <-
   ggplot(sim_plot, aes(x=year, y=pop, colour = CoB)) +
   geom_line() +
-  facet_wrap(~ETH.group, nrow = 2, scales = "free") +
+  facet_wrap(~ ETH.group, nrow = 2, scales = "free") +
   ggtitle("UK born/Non-UK born by year")
 
 q
@@ -155,8 +155,9 @@ ggsave(q, filename = "ethgrp_UKborn_years_lines.png", scale = 3)
 sim_plot <-
   sim_pop %>%
   # filter(age == 20) %>%
-  mutate(agegrp = cut(age, seq(0,100,by = 5), right = FALSE),
-         pop = ifelse(pop < 0 , 0 ,pop)) %>%                  ##TODO: why negative pop?
+  mutate(agegrp = cut(age, seq(0, 100, by = 5), right = FALSE)#,
+         # pop = ifelse(pop < 0 , 0 ,pop)
+         ) %>%                  ##TODO: why negative pop?
   group_by(CoB, ETH.group, agegrp, year) %>%
   summarise(pop = sum(pop)) %>%
   group_by(ETH.group, agegrp, year) %>%
@@ -187,3 +188,4 @@ for (var in unique(sim_plot$agegrp)) {
 
     print(p[[var]] + ggtitle(var))
 }
+
