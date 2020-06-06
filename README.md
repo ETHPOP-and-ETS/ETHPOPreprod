@@ -7,10 +7,30 @@
 
 <!-- badges: end -->
 
-The original goal of demoSynthPop is to recreate the ETHPOP population
+The original goal of `demoSynthPop` is to recreate the ETHPOP population
 data using the ETHPOP birth, death, inmigration and outmigration data.
 This is a check for internal consistency and we will use the same
 approach to extend for UK born and non-UK born individuals too.
+
+## Background
+
+Demographic population predictions commonly use *cohort-component
+methods* which may be divided in to macro- and micro-simulation models
+(see Microsimulation Methods for Population Projection, E van Imhoff, W
+Post, Population: An English Selection , 1998, Vol. 10, No. 1, New
+Methodological Approaches in the Social Sciences (1998), pp. 97-138.) A
+*microsimulation* generates individual life histories. A
+*macrosimulation* is used for a “stock-and-flow” type modelling of
+proportions of the population.
+
+There are numerous general compartmental type packages in R, often using
+Markov models. Specifically for population projections see e.g.
+[demography](https://github.com/robjhyndman/demography).
+
+An R package closely connected to `demoSynthPop` is
+[demographyMicrosim](https://github.com/virgesmith/demographyMicrosim)
+which also projects an English population using ETHPOP data, but using a
+microsimulation approach.
 
 ## Installation
 
@@ -38,8 +58,7 @@ The ethnic groups are: BAN (Bangladeshi), BLA (Black African), BLC
 Asian), OBL (Other Black), OTH (Other), PAK (Pakistani), WBI (White
 British), WHO (White Other)
 
-The ages are individual years from 0 to 99 and a single group for
-\(\geq\) 100.
+The ages are individual years from 0 to 99 and a single group for \> 99.
 
 The calendar years are 2011 to 2061.
 
